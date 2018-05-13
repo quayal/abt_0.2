@@ -1,12 +1,11 @@
 package com.quayal.abt.beans;
 
-import org.jooq.types.UInteger;
 
 import java.time.LocalDate;
 
 public class CourseBean {
 
-    private UInteger id;
+    private Integer id;
     private String courseName;
     private String courseCode;
     private int companyId;
@@ -27,11 +26,11 @@ public class CourseBean {
     }
 
 
-    public UInteger getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(UInteger id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

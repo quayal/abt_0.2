@@ -2,13 +2,13 @@ package com.quayal.abt.services;
 
 import com.quayal.abt.beans.CourseBean;
 import org.jooq.DSLContext;
+import org.jooq.generated.abt.tables.Trainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static org.jooq.generated.abt.Tables.COURSE;
-import static org.jooq.generated.abt.Tables.TRAINER;
 
 @Service
 public class CourseService {
@@ -21,8 +21,13 @@ public class CourseService {
     }
 
     public List<CourseBean> getCourses() {
+        Trainer t = Trainer.TRAINER.as("t");
+        Trainer f = Trainer.TRAINER.as("f");
         Short facilitator = 1;
-        return create.select(COURSE.COURSE_NAME, COURSE.COURSE_CODE, TRAINER.LAST_NAME.as("Trainer"), TRAINER.LAST_NAME.as("Facilitator"), COURSE.DAY_ONE, COURSE.DAY_TWO)
-        .from(COURSE).join(TRAINER).on(COURSE.FACILITATOR.eq(TRAINER.ID)).where(COURSE.FACILITATOR.eq(facilitator)).fetchInto(CourseBean.class);
+        return create.select(COURSE.ID, COURSE.COURSE_NAME, COURSE.COURSE_CODE, t.LAST_NAME.as("trainer"),
+                f.LAST_NAME.as("facilitator"), COURSE.DAY_ONE, COURSE.DAY_TWO)
+                .from(COURSE).join(t).on(COURSE.TRAINER.eq(t.ID)).join(f)
+                .on(COURSE.FACILITATOR.eq(f.ID)).where(COURSE.FACILITATOR.eq(facilitator))
+                .fetchInto(CourseBean.class);
     }
 }
