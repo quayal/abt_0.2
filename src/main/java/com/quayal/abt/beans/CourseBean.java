@@ -1,6 +1,8 @@
 package com.quayal.abt.beans;
 
 
+import org.jooq.generated.abt.tables.Trainer;
+
 import java.time.LocalDate;
 
 public class CourseBean {
@@ -13,8 +15,8 @@ public class CourseBean {
     private LocalDate dayTwo;
     private LocalDate closingDate;
     private LocalDate closed;
-    private String trainer;
-    private String facilitator;
+    private TrainerBean trainer;
+    private TrainerBean facilitator;
     private int contactId;
     private int projectManager;
     private String courseEmail;
@@ -90,19 +92,19 @@ public class CourseBean {
         this.closed = closed;
     }
 
-    public String getTrainer() {
+    public TrainerBean getTrainer() {
         return trainer;
     }
 
-    public void setTrainer(String trainer) {
+    public void setTrainer(TrainerBean trainer) {
         this.trainer = trainer;
     }
 
-    public String getFacilitator() {
+    public TrainerBean getFacilitator() {
         return facilitator;
     }
 
-    public void setFacilitator(String facilitator) {
+    public void setFacilitator(TrainerBean facilitator) {
         this.facilitator = facilitator;
     }
 
