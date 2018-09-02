@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.0.1.RELEASE'
+		springBootVersion = '2.0.4.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -11,12 +11,14 @@ buildscript {
 }
 
 plugins {
-	id 'nu.studer.jooq' version '2.0.9'
+	id 'nu.studer.jooq' version '3.0.2'
+	id 'org.springframework.boot' version '2.0.4.RELEASE'
+	id 'com.devsoap.vaadin-flow' version '1.0.0.M4.1'
 }
+vaadin.autoconfigure()
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.quayal'
@@ -27,17 +29,14 @@ repositories {
 	mavenCentral()
 }
 
-
-ext {
-	vaadinVersion = '8.3.1'
-}
+ext	['jooq.version'] = '3.11.4'
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-jdbc')
 	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('com.vaadin:vaadin-spring-boot-starter')
-	compile('org.jooq:jooq')
+	compile('org.jooq:jooq:3.11.4')
 	runtime('mysql:mysql-connector-java')
 	jooqRuntime('mysql:mysql-connector-java')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
@@ -45,30 +44,26 @@ dependencies {
 }
 
 dependencyManagement {
-	imports {
-		mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
-	}
 }
 
 jooq {
 	abt(sourceSets.main) {
-        jdbc {
+		jdbc {
 			driver = 'com.mysql.jdbc.Driver'
 			url = 'jdbc:mysql://localhost:3306/abt'
-			user = 'application'
-			password = 'toothless'
+			user = 'root'
+			password = 'T00thle$$'
 		}
 
 		generator {
-			name = 'org.jooq.util.DefaultGenerator'
+			name = 'org.jooq.codegen.DefaultGenerator'
 
 			database {
-				name = 'org.jooq.util.mysql.MySQLDatabase'
+				name = 'org.jooq.meta.mysql.MySQLDatabase'
 
 				includes = '.*'
 			}
 		}
-		}
-
 	}
+}
 

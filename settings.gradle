@@ -1,1 +1,2 @@
 rootProject.name = 'abt'
+enableFeaturePreview('IMPROVED_POM_SUPPORT')

@@ -2,9 +2,10 @@ package com.quayal.abt.services;
 
 import com.quayal.abt.beans.CourseBean;
 import com.quayal.abt.beans.TrainerBean;
+import com.quayal.abt.data.access.ConnectionProvider;
 import org.jooq.DSLContext;
-import org.jooq.generated.abt.tables.Trainer;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -13,8 +14,6 @@ import java.util.Map;
 
 import static org.jooq.generated.abt.Tables.COURSE;
 import static org.jooq.generated.abt.Tables.TRAINER;
-import static org.jooq.impl.DSL.concat;
-import static org.jooq.impl.DSL.val;
 
 @Service
 public class CourseService {
@@ -22,16 +21,12 @@ public class CourseService {
     private final DSLContext create;
     private final TrainerService trainerService;
 
-    @Autowired
-    public CourseService(DSLContext dslContext, TrainerService trainerService){
-        this.create = dslContext;
-        this.trainerService = trainerService;
+    public CourseService() {
+        create = DSL.using(ConnectionProvider.getConnection(), SQLDialect.MYSQL_8_0);
+        trainerService = TrainerService.getInstance();
     }
 
     public List<CourseBean> getCourses() {
-        Trainer t = Trainer.TRAINER.as("t");
-        Trainer f = Trainer.TRAINER.as("f");
-        Short facilitator = 1;
         Map<Integer, TrainerBean> courseTrainer =
                 create.select(COURSE.ID, TRAINER.ID, TRAINER.FIRST_NAME, TRAINER.LAST_NAME, TRAINER.PHONE, TRAINER.EMAIL)
                         .from(COURSE)
@@ -51,14 +46,6 @@ public class CourseService {
         courses.forEach(courseBean -> courseBean.setTrainer(courseTrainer.get(courseBean.getId())));
         courses.forEach(courseBean -> courseBean.setFacilitator(courseFacilitator.get(courseBean.getId())));
         return courses;
-
-
-
-//        return create.select(COURSE.ID, COURSE.COURSE_NAME, COURSE.COURSE_CODE, (concat(t.FIRST_NAME, val(" "), t.LAST_NAME)).as("trainer"),
-//                (concat(f.FIRST_NAME, val(" "), f.LAST_NAME)).as("facilitator"), COURSE.DAY_ONE, COURSE.DAY_TWO)
-//                .from(COURSE).join(t).on(COURSE.TRAINER.eq(t.ID)).join(f)
-//                .on(COURSE.FACILITATOR.eq(f.ID)).where(COURSE.FACILITATOR.eq(facilitator))
-//                .fetchInto(CourseBean.class);
     }
 
     public void save(CourseBean courseBean) {
@@ -73,4 +60,9 @@ public class CourseService {
 //                .set(COURSE.CLOSED, Date.valueOf(courseBean.getClosed()))
                 .where(COURSE.ID.eq(courseBean.getId())).execute();
     }
+
+    public static CourseService getInstance(){
+        return new CourseService();
+    }
 }
+
