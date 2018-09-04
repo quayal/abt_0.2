@@ -8,7 +8,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @HtmlImport("styles/shared-styles.html")
 @Route("app")
@@ -20,7 +19,6 @@ public class MainView extends VerticalLayout {
     private CourseForm courseForm;
 
 
-    @Autowired
     public MainView(CourseService courseService, TrainerService trainerService) {
         this.courseService = courseService;
         this.trainerService = trainerService;
@@ -33,6 +31,7 @@ public class MainView extends VerticalLayout {
         setHeight("100vh");
         updateCourses();
         add(main);
+        courseGrid.asSingleSelect().addValueChangeListener(event -> courseForm.populateForm(event.getValue()));
     }
 
     private void updateCourses() {

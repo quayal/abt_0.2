@@ -21,8 +21,10 @@ class CourseForm extends FormLayout {
     private TrainerService trainerService;
     private TextField courseName = new TextField("Course name");
     private TextField courseCode = new TextField("Course code");
-    private ComboBox<TrainerBean > trainer = new ComboBox<>("Trainer");
-    private ComboBox<TrainerBean > facilitator = new ComboBox<>("Facilitator");
+    ComboBox<TrainerBean> trainerBox = new ComboBox<>("Trainer");
+    ComboBox<TrainerBean> facilitatorBox = new ComboBox<>("Facilitator");
+    List<TrainerBean> trainers;
+    List<TrainerBean> facilitators;
     private DatePicker dayOne = new DatePicker("Day one");
     private DatePicker dayTwo = new DatePicker("Day two");
     private Button saveButton = new Button("Save");
@@ -34,26 +36,37 @@ class CourseForm extends FormLayout {
     CourseForm(MainView mainView, TrainerService trainerService, CourseService courseService){
         this.trainerService = trainerService;
         this.courseService = courseService;
-        List<TrainerBean> trainers = trainerService.getAllTrainers();
-        List<TrainerBean> facilitators = trainerService.getAllTrainers();
+        trainers = trainerService.getAllTrainers();
+        facilitators = trainerService.getAllTrainers();
 
         this.mainView = mainView;
-        trainer.setItems(trainers);
-        trainer.setItemLabelGenerator(TrainerBean::getFullName);
-        facilitator.setItems(facilitators);
-        facilitator.setItemLabelGenerator(TrainerBean::getFullName);
+
+        trainerBox.setItems(trainers);
+        trainerBox.setItemLabelGenerator(TrainerBean::getFullName);
+        facilitatorBox.setItems(facilitators);
+        facilitatorBox.setItemLabelGenerator(TrainerBean::getFullName);
         courseBeanBinder.bindInstanceFields(this);
         saveButton.addClickListener(event -> save(courseBean));
-        saveButton.setEnabled(true);
-        add(courseName, courseCode, trainer, facilitator, dayOne, dayTwo, saveButton);
+        add(courseName, courseCode, trainerBox, facilitatorBox, dayOne, dayTwo, saveButton);
         setSizeFull();
         setVisible(true);
+
 
     }
 
     void populateForm(CourseBean courseBean) {
         this.courseBean = courseBean;
         courseBeanBinder.setBean(courseBean);
+        trainerBox.setValue(trainers.stream()
+                .filter(trainerBean -> trainerBean.getId() == courseBean.getTrainer().getId())
+                .findFirst().get());
+        if (courseBean.getFacilitator() != null) {
+            facilitatorBox.setValue(facilitators.stream()
+                    .filter(facilitatorBean -> facilitatorBean.getId() == courseBean.getFacilitator().getId())
+                    .findFirst().get());
+        }
+
+        saveButton.setEnabled(true);
     }
     void setCourseBean(CourseBean courseBean) {
         this.courseBean = courseBean;

@@ -3,7 +3,6 @@ package com.quayal.abt.services;
 import com.quayal.abt.beans.TrainerBean;
 import com.quayal.abt.data.access.JooqConnector;
 import org.jooq.DSLContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +16,8 @@ public class TrainerService {
 
     private DSLContext create;
 
-    @Autowired
     public TrainerService(JooqConnector jooqConnector) {
         create = jooqConnector.getCreate();
-
     }
 
     public TrainerBean getTrainerBeanById(short trainerId) {

@@ -12,18 +12,13 @@ import java.sql.DriverManager;
 public class ConnectionProvider {
 
     @Value("${spring.datasource.username}")
-//    private static String user;
-
-    private static String user = "root";
+    private static String user;
 
     @Value("${spring.datasource.password}")
-//    private static String password;
-
-    private static String password = "T00thle$$";
+    private static String password;
 
     @Value("${spring.datasource.url}")
-//    private static String url;
-    private static String url = "jdbc:mysql://localhost:3306/abt";
+    private static String url;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
