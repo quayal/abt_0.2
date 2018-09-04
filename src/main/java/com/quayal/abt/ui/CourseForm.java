@@ -18,6 +18,7 @@ class CourseForm extends FormLayout {
     private MainView mainView;
     private CourseBean courseBean;
     private CourseService courseService;
+    private TrainerService trainerService;
     private TextField courseName = new TextField("Course name");
     private TextField courseCode = new TextField("Course code");
     private ComboBox<TrainerBean > trainer = new ComboBox<>("Trainer");
@@ -30,8 +31,9 @@ class CourseForm extends FormLayout {
 
     private Binder<CourseBean> courseBeanBinder = new Binder<>(CourseBean.class);
 
-    CourseForm(MainView mainView){
-        TrainerService trainerService = TrainerService.getInstance();
+    CourseForm(MainView mainView, TrainerService trainerService, CourseService courseService){
+        this.trainerService = trainerService;
+        this.courseService = courseService;
         List<TrainerBean> trainers = trainerService.getAllTrainers();
         List<TrainerBean> facilitators = trainerService.getAllTrainers();
 

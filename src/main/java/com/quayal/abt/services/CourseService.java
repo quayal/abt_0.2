@@ -2,10 +2,9 @@ package com.quayal.abt.services;
 
 import com.quayal.abt.beans.CourseBean;
 import com.quayal.abt.beans.TrainerBean;
-import com.quayal.abt.data.access.ConnectionProvider;
+import com.quayal.abt.data.access.JooqConnector;
 import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -18,12 +17,11 @@ import static org.jooq.generated.abt.Tables.TRAINER;
 @Service
 public class CourseService {
 
-    private final DSLContext create;
-    private final TrainerService trainerService;
+    private DSLContext create;
 
-    public CourseService() {
-        create = DSL.using(ConnectionProvider.getConnection(), SQLDialect.MYSQL_8_0);
-        trainerService = TrainerService.getInstance();
+    @Autowired
+    public CourseService(JooqConnector jooqConnector) {
+        create = jooqConnector.getCreate();
     }
 
     public List<CourseBean> getCourses() {
@@ -61,8 +59,5 @@ public class CourseService {
                 .where(COURSE.ID.eq(courseBean.getId())).execute();
     }
 
-    public static CourseService getInstance(){
-        return new CourseService();
-    }
 }
 

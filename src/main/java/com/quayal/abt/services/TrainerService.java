@@ -1,10 +1,9 @@
 package com.quayal.abt.services;
 
 import com.quayal.abt.beans.TrainerBean;
-import com.quayal.abt.data.access.ConnectionProvider;
+import com.quayal.abt.data.access.JooqConnector;
 import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,10 +15,12 @@ import static org.jooq.impl.DSL.val;
 @Service
 public class TrainerService {
 
-    DSLContext create;
+    private DSLContext create;
 
-    private TrainerService() {
-        create = DSL.using(ConnectionProvider.getConnection(), SQLDialect.MYSQL_8_0);
+    @Autowired
+    public TrainerService(JooqConnector jooqConnector) {
+        create = jooqConnector.getCreate();
+
     }
 
     public TrainerBean getTrainerBeanById(short trainerId) {
@@ -32,11 +33,6 @@ public class TrainerService {
 
     public List<TrainerBean> getAllTrainers() {
         return create.select().from(TRAINER).fetchInto(TrainerBean.class);
-    }
-
-
-    public static TrainerService getInstance(){
-        return new TrainerService();
     }
 
     }

@@ -8,6 +8,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @HtmlImport("styles/shared-styles.html")
 @Route("app")
@@ -16,12 +17,14 @@ public class MainView extends VerticalLayout {
     private CourseService courseService;
     private TrainerService trainerService;
     private Grid<CourseBean> courseGrid = new Grid<>();
-    private CourseForm courseForm = new CourseForm(this);
+    private CourseForm courseForm;
 
 
-    public MainView() {
-        courseService = CourseService.getInstance();
-        trainerService = TrainerService.getInstance();
+    @Autowired
+    public MainView(CourseService courseService, TrainerService trainerService) {
+        this.courseService = courseService;
+        this.trainerService = trainerService;
+        courseForm = new CourseForm(this, trainerService, courseService);
         courseGrid.setSizeFull();
         courseGrid.addColumn(CourseBean::getCourseName).setHeader("Course name");
         HorizontalLayout main = new HorizontalLayout(courseGrid, courseForm);
